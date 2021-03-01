@@ -1,0 +1,27 @@
+on: push
+name: Deploy website on push
+jobs:
+  web-deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get latest code
+      uses: actions/checkout@v2
+
+    - name: Setup node
+      uses: actions/setup-node@v2
+      with:
+        node-version: 15
+
+    - name: Build and generate page
+      run: npm install
+      run: npm run build
+      run: npm run generate
+
+    - name: Sync files
+      uses: SamKirkland/FTP-Deploy-Action@4
+      with:
+        server: w00ee8e3.kasserver.com
+        username: f013b414
+        password: ${{ secrets.ftp_password }}
+        local-dir: ./dist
